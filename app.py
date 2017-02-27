@@ -1,9 +1,12 @@
 
 # -*- coding: utf-8 -*-
 
-from flask import Flask, render_template, request, redirect
-from models import IncomingLog, Users
+from flask import Flask, render_template, request, redirect, url_for, session, flash
+from models import IncomingLog, Users, Services
 app = Flask(__name__)
+
+# set the secret key.  keep this really secret: required to use session
+app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 
 @app.route('/')
@@ -12,39 +15,71 @@ def index():
                            title='Home')
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/modules')
+def organization_modules():
+    org_id = request.args['org_id']
+    session_org_id = session.get('org_id', None)
+    if session.get('logged_in') is not None and str(session_org_id) == org_id:
+        print 'Organization id: ', org_id
+        service = Services.select(Services.service_type).where(Services.org_id == org_id)
+        print 'Services rows: ', len(service)
+        services = [items.service_type.name for items in service]
+        return render_template('services.html',
+                        services=list(set(services)),
+                        org_id=org_id)
+    else:
+        return redirect(url_for('index'))
+
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     username = request.form['username']
     password = request.form['password']
-    print username, password
     try:
-        user = Users.select().where(Users.username == username, Users.password == password)[0]
+        user = Users.select().where(Users.username == username,
+                                    Users.password == password)[0]
     except:
         raise RuntimeError('User does not exist!')
     else:
-        print user.org_id
-    return redirect('/nuwakotreport')
+        session['logged_in'] = True
+        session['org_id'] = user.org_id
+    return redirect(url_for('organization_modules', org_id=user.org_id))
 
 
-@app.route('/nuwakotreport')
-def testreport():
-    reports = []
-    for i in IncomingLog.select().where(IncomingLog.extension == 3001):
-        item = []
-        item.append(i.incoming_number)
-        item.append(i.call_start_time)
-        item.append(i.generalized_data_incoming_id.data)
-        org_name = i.org.name
-        to = i.extension
-        reports.append(item)
-#    print '\n\n', reports, '\n\n'
-    return render_template(
-        'test_report.html',
-        title='Report',
-        output=reports,
-        org_name=org_name,
-        to=to
-    )
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    return redirect(url_for('index'))
+
+
+@app.route('/pullreport', methods=['GET'])
+def get_report():
+    org_id = int(request.args['org_id'])
+    session_org_id = session.get('org_id', None)
+    if session.get('logged_in') is not None and session_org_id == org_id:
+        service_name = str(request.args['service'])
+        reports = []
+        try:
+            for i in IncomingLog.select().where(IncomingLog.org == org_id, IncomingLog.service == service_name):
+                item = []
+                item.append(i.incoming_number)
+                item.append(i.call_start_time)
+                item.append(i.generalized_data_incoming_id.data)
+                org_name = i.org.name
+                to = i.extension
+                reports.append(item)
+            return render_template(
+                'test_report.html',
+                title='Report',
+                output=reports,
+                org_name=org_name,
+                to=to
+            )
+        except:
+            flash('No reports available for this service!')
+            return redirect(url_for('organization_modules', org_id=org_id))
+    else:
+        return redirect(url_for('index'))
 
 if __name__ == "__main__":
     app.run(debug=True)

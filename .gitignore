@@ -1,0 +1,4 @@
+*.pyc
+*.wav
+.ropeproject
+*.swp
