@@ -21,11 +21,11 @@ def organization_modules():
     session_org_id = session.get('org_id', None)
     if session.get('logged_in') is not None and str(session_org_id) == org_id:
         print 'Organization id: ', org_id
-        service = Services.select(Services.service_type).where(Services.org_id == org_id)
+        service = Services.select().where(Services.org_id == org_id)
         print 'Services rows: ', len(service)
-        services = [items.service_type.name for items in service]
+        services = [[items.service_type.name, items.extension] for items in service]
         return render_template('services.html',
-                        services=list(set(services)),
+                        services=services,
                         org_id=org_id)
     else:
         return redirect(url_for('index'))
@@ -55,25 +55,25 @@ def logout():
 @app.route('/pullreport', methods=['GET'])
 def get_report():
     org_id = int(request.args['org_id'])
+    extension = int(request.args['extension'])
     session_org_id = session.get('org_id', None)
     if session.get('logged_in') is not None and session_org_id == org_id:
         service_name = str(request.args['service'])
         reports = []
         try:
-            for i in IncomingLog.select().where(IncomingLog.org == org_id, IncomingLog.service == service_name):
+            for i in IncomingLog.select().where(IncomingLog.org == org_id, IncomingLog.service == service_name, IncomingLog.extension == extension):
                 item = []
                 item.append(i.incoming_number)
                 item.append(i.call_start_time)
                 item.append(i.generalized_data_incoming_id.data)
                 org_name = i.org.name
-                to = i.extension
                 reports.append(item)
             return render_template(
                 'test_report.html',
                 title='Report',
                 output=reports,
                 org_name=org_name,
-                to=to
+                to=extension
             )
         except:
             flash('No reports available for this service!')

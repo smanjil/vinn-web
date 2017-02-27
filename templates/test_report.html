@@ -4,8 +4,14 @@
         <title>{{ title }}</title>
     </head>
     <body>
-    <b>Organization: </b>{{ org_name }}<br>
-    <b>To: </b>{{ to }}<br><br>
+        {% if not session.logged_in %}
+            <a href="/login"><b>Login</b></a>
+        {% else %}
+            <a href="/logout"><b>Logout</b></a><br><br>
+        {% endif %}
+        
+        <b>Organization: </b>{{ org_name }}<br>
+        <b>To: </b>{{ to }}<br><br>
         <table border="2">
             <tr>
                 <th>S.No.</th>

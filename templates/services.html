@@ -1,6 +1,9 @@
 
-<a href="/logout"><b>Logout</b></a><br><br>
-
+{% if not session.logged_in %}
+    <a href="/login"><b>Login</b></a>
+{% else %}
+    <a href="/logout"><b>Logout</b></a><br><br>
+{% endif %}
 
 {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -13,5 +16,5 @@
 {% endwith %}
 
 {% for service in services %}
-    <li><a href="/pullreport?org_id={{ org_id }}&service={{ service }}">{{ service }}</a></li><br>
+    <li><a href="/pullreport?org_id={{ org_id }}&service={{ service.0 }}&extension={{ service.1 }}">{{ service.0 }} ({{ service.1 }})</a></li><br>
 {% endfor %}
