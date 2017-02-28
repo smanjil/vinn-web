@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-from models import IncomingLog, Users, Services
+from models import IncomingLog, Users, Services, Comment
 app = Flask(__name__)
 
 # set the secret key.  keep this really secret: required to use session
@@ -52,20 +52,35 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/pullreport', methods=['GET'])
+@app.route('/pullreport', methods=['GET', 'POST'])
 def get_report():
     org_id = int(request.args['org_id'])
     extension = str(request.args['extension'])
     session_org_id = session.get('org_id', None)
     if session.get('logged_in') is not None and session_org_id == org_id:
         service_name = str(request.args['service'])
+
+        if request.method == 'POST':
+            if 'commentform' in request.form:
+                log_id = request.form['log_id']
+                comment = request.form['comment']
+                Comment.create(log_id=log_id, comment=comment)
+            if 'statusform' in request.form:
+                log_id = request.form['log_id']
+                status = request.form['status']
+                i = IncomingLog.update(status=status).where(IncomingLog.id == log_id)
+                i.execute()
+
         reports = []
         try:
-            for i in IncomingLog.select().where(IncomingLog.org == org_id, IncomingLog.service == service_name, IncomingLog.extension == extension):
+            for i in IncomingLog.select().where(IncomingLog.org == org_id, IncomingLog.service == service_name, IncomingLog.extension == extension).order_by(IncomingLog.id.desc()):
                 item = []
                 item.append(i.incoming_number)
                 item.append(i.call_start_time)
-                item.append(i.generalized_data_incoming_id.data)
+                item.append(i.generalized_data_incoming.data)
+                item.append(i.id)
+                item.append(i.comment_set)
+                item.append(i.status)
                 org_name = i.org.name
                 reports.append(item)
             return render_template(
@@ -74,7 +89,8 @@ def get_report():
                 output=reports,
                 org_name=org_name,
                 to=extension,
-                service_name=service_name
+                service_name=service_name,
+                org_id=org_id
             )
         except:
             flash('No reports available for this service!')

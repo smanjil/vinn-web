@@ -20,6 +20,8 @@
                     <th>From</th>
                     <th>DateTime</th>
                     <th>Call Description</th>
+                    <th>Comment</th>
+                    <th>Status</th>
                 </tr>
                 {% for items in output %}
                     <tr>
@@ -94,6 +96,34 @@
                                          <source src="{{ url_for('static', filename=items.2['vsurvey']['msg_audio'] + '.wav') }}" type="audio/mpeg">
                                      </audio>  <br><br>
                             {% endif %}
+                        </td>
+                        <td>
+                            <form action="/pullreport?org_id={{ org_id }}&service={{ service_name }}&extension={{ to }}" method="post">
+                                <input type="hidden" name="log_id" value="{{ items.3 }}">
+                                <b>Comment:</b> <textarea cols="20" rows="5" name="comment"></textarea><br>
+                                <input type="submit" value="Add Comment" name="commentform"> 
+                            </form>
+                            <h3>Previous Comments:</h3>
+                            {% for item in items.4 %}
+                                <li>{{ item.comment }}</li>
+                            {% endfor %}
+                        </td>
+                        <td>
+                           <form action="/pullreport?org_id={{ org_id }}&service={{ service_name }}&extension={{ to }}" method="post">
+                               <input type="hidden" name="log_id" value="{{ items.3 }}">
+                               <b>Status:</b> <br> 
+                               <input type="radio" name="status" value="solved" 
+                                            {% if items.5 == 'solved' %}
+                                                checked
+                                            {% endif %}
+                                        > Solved<br>
+                                    <input type="radio" name="status" value="unsolved" 
+                                            {% if items.5 == 'unsolved' %}
+                                                checked
+                                            {% endif %}
+                                        > Unsolved<br>
+                              <input type="submit" value="Change Status" name="statusform"> 
+                           </form>
                         </td>
                     </tr>
                 {% endfor %}
