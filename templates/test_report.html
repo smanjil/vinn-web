@@ -12,89 +12,119 @@
         
         <b>Organization: </b>{{ org_name }}<br>
         <b>To: </b>{{ to }}<br><br>
-        <table border="2">
-            <tr>
-                <th>S.No.</th>
-                <th>From</th>
-                <th>DateTime</th>
-                <th>Call Description</th>
-            </tr>
-            {% for items in output %}
+
+        {% if service_name == 'VNuwakot' %}
+            <table border="2">
                 <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ items.0 }}</td>
-                    <td>{{ items.1 }}</td> 
-                    <td>
-                        {% if items.2['vboard']['vboard1'] and items.2['vboard']['vboard2'] and items.2['vsurvey']['status'] %}
-                            Listened to both audios <br> Took Survey <br>
-                            VDC: 
-                                 <audio controls>
-                                     <source src="{{ url_for('static', filename=items.2['vsurvey']['vdc_audio'] + '.wav') }}" type="audio/mpeg">
-                                 </audio>  <br><br>
-                            Emergency or Eye: {% if items.2['vsurvey']['emergency_or_eye'] == '1' %}
-                                                Emergency 
-                                              {% else %}
-                                                Eye
-                                              {% endif %} <br>
-                            Message: 
-                                 <audio controls>
-                                     <source src="{{ url_for('static', filename=items.2['vsurvey']['msg_audio'] + '.wav') }}" type="audio/mpeg">
-                                 </audio>  <br><br>
-                        {% elif items.2['vboard']['vboard1'] and items.2['vsurvey']['status'] %}
-                            Listened to audio1 <br> Took Survey <br>
-                            VDC:  
-                                 <audio controls>
-                                     <source src="{{ url_for('static', filename=items.2['vsurvey']['vdc_audio'] + '.wav') }}" type="audio/mpeg">
-                                 </audio>  <br><br>
-                            Emergency or Eye: {% if items.2['vsurvey']['emergency_or_eye'] == '1' %}
-                                                Emergency 
-                                              {% else %}
-                                                Eye
-                                              {% endif %} <br>
-                            Message: 
-                                 <audio controls>
-                                     <source src="{{ url_for('static', filename=items.2['vsurvey']['msg_audio'] + '.wav') }}" type="audio/mpeg">
-                                 </audio>  <br><br>
-                        {% elif items.2['vboard']['vboard2'] and items.2['vsurvey']['status'] %}
-                            Listened to audio2 <br> Took Survey <br> 
-                            VDC: 
-                                 <audio controls>
-                                     <source src="{{ url_for('static', filename=items.2['vsurvey']['vdc_audio'] + '.wav') }}" type="audio/mpeg">
-                                 </audio>  <br><br>
-                            Emergency or Eye: {% if items.2['vsurvey']['emergency_or_eye'] == '1' %}
-                                                Emergency 
-                                              {% else %}
-                                                Eye
-                                              {% endif %} <br>
-                            Message: 
-                                 <audio controls>
-                                     <source src="{{ url_for('static', filename=items.2['vsurvey']['msg_audio'] + '.wav') }}" type="audio/mpeg">
-                                 </audio>  <br><br>
-                        {% elif items.2['vboard']['vboard1'] and items.2['vboard']['vboard2'] and not items.2['vsurvey']['status'] %}
-                            Listened to audio1 and audio2
-                        {% elif items.2['vboard']['vboard1'] and not items.2['vsurvey']['status'] %}
-                            Listened to audio1
-                        {% elif items.2['vboard']['vboard2'] and not items.2['vsurvey']['status'] %}
-                            Listened to audio2
-                        {% elif not items.2['vboard']['vboard1'] and not items.2['vboard']['vboard2'] and items.2['vsurvey']['status'] %}
-                            Took Survey <br> 
-                            VDC: 
-                                 <audio controls>
-                                     <source src="{{ url_for('static', filename=items.2['vsurvey']['vdc_audio'] + '.wav') }}" type="audio/mpeg">
-                                 </audio>  <br><br>
-                            Emergency or Eye: {% if items.2['vsurvey']['emergency_or_eye'] == '1' %}
-                                                Emergency 
-                                              {% else %}
-                                                Eye
-                                              {% endif %} <br>
-                            Message: 
-                                 <audio controls>
-                                     <source src="{{ url_for('static', filename=items.2['vsurvey']['msg_audio'] + '.wav') }}" type="audio/mpeg">
-                                 </audio>  <br><br>
-                        {% endif %}
-                    </td>
+                    <th>S.No.</th>
+                    <th>From</th>
+                    <th>DateTime</th>
+                    <th>Call Description</th>
                 </tr>
-            {% endfor %}
-        </table>
+                {% for items in output %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ items.0 }}</td>
+                        <td>{{ items.1 }}</td> 
+                        <td>
+                            {% if items.2['vboard']['vboard1'] and items.2['vboard']['vboard2'] and items.2['vsurvey']['status'] %}
+                                Listened to both audios <br> Took Survey <br>
+                                VDC: 
+                                     <audio controls>
+                                         <source src="{{ url_for('static', filename=items.2['vsurvey']['vdc_audio'] + '.wav') }}" type="audio/mpeg">
+                                     </audio>  <br><br>
+                                Emergency or Eye: {% if items.2['vsurvey']['emergency_or_eye'] == '1' %}
+                                                    Emergency 
+                                                  {% else %}
+                                                    Eye
+                                                  {% endif %} <br>
+                                Message: 
+                                     <audio controls>
+                                         <source src="{{ url_for('static', filename=items.2['vsurvey']['msg_audio'] + '.wav') }}" type="audio/mpeg">
+                                     </audio>  <br><br>
+                            {% elif items.2['vboard']['vboard1'] and items.2['vsurvey']['status'] %}
+                                Listened to audio1 <br> Took Survey <br>
+                                VDC:  
+                                     <audio controls>
+                                         <source src="{{ url_for('static', filename=items.2['vsurvey']['vdc_audio'] + '.wav') }}" type="audio/mpeg">
+                                     </audio>  <br><br>
+                                Emergency or Eye: {% if items.2['vsurvey']['emergency_or_eye'] == '1' %}
+                                                    Emergency 
+                                                  {% else %}
+                                                    Eye
+                                                  {% endif %} <br>
+                                Message: 
+                                     <audio controls>
+                                         <source src="{{ url_for('static', filename=items.2['vsurvey']['msg_audio'] + '.wav') }}" type="audio/mpeg">
+                                     </audio>  <br><br>
+                            {% elif items.2['vboard']['vboard2'] and items.2['vsurvey']['status'] %}
+                                Listened to audio2 <br> Took Survey <br> 
+                                VDC: 
+                                     <audio controls>
+                                         <source src="{{ url_for('static', filename=items.2['vsurvey']['vdc_audio'] + '.wav') }}" type="audio/mpeg">
+                                     </audio>  <br><br>
+                                Emergency or Eye: {% if items.2['vsurvey']['emergency_or_eye'] == '1' %}
+                                                    Emergency 
+                                                  {% else %}
+                                                    Eye
+                                                  {% endif %} <br>
+                                Message: 
+                                     <audio controls>
+                                         <source src="{{ url_for('static', filename=items.2['vsurvey']['msg_audio'] + '.wav') }}" type="audio/mpeg">
+                                     </audio>  <br><br>
+                            {% elif items.2['vboard']['vboard1'] and items.2['vboard']['vboard2'] and not items.2['vsurvey']['status'] %}
+                                Listened to audio1 and audio2
+                            {% elif items.2['vboard']['vboard1'] and not items.2['vsurvey']['status'] %}
+                                Listened to audio1
+                            {% elif items.2['vboard']['vboard2'] and not items.2['vsurvey']['status'] %}
+                                Listened to audio2
+                            {% elif not items.2['vboard']['vboard1'] and not items.2['vboard']['vboard2'] and items.2['vsurvey']['status'] %}
+                                Took Survey <br> 
+                                VDC: 
+                                     <audio controls>
+                                         <source src="{{ url_for('static', filename=items.2['vsurvey']['vdc_audio'] + '.wav') }}" type="audio/mpeg">
+                                     </audio>  <br><br>
+                                Emergency or Eye: {% if items.2['vsurvey']['emergency_or_eye'] == '1' %}
+                                                    Emergency 
+                                                  {% else %}
+                                                    Eye
+                                                  {% endif %} <br>
+                                Message: 
+                                     <audio controls>
+                                         <source src="{{ url_for('static', filename=items.2['vsurvey']['msg_audio'] + '.wav') }}" type="audio/mpeg">
+                                     </audio>  <br><br>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <table border="2">
+                <tr>
+                    <th>S.N.</th>
+                    <th>From</th>
+                    <th>DateTime</th>
+                    <th>Call Description</th>
+                </tr>
+                {% for items in output %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ items.0 }}</td>
+                        <td>{{ items.1 }}</td>
+                        <td>
+                            Playback Completed: {{ items.2['playbackCompleted'] }} <br>
+                            {% if 'timesRepeated' in items.2 %}
+                                Times Repeated: {{ items.2['timesRepeated'] }} 
+                            {% elif 'recordedFileName' in items.2 %}
+                                Recorded File:  
+                                    <audio controls>
+                                        <source src="{{ url_for('static', filename=items.2['recordedFileName'] + '.wav') }}" type="audio/mpeg">
+                                    </audio>  <br><br>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
     </body>
 </html

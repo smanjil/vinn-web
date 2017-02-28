@@ -55,7 +55,7 @@ def logout():
 @app.route('/pullreport', methods=['GET'])
 def get_report():
     org_id = int(request.args['org_id'])
-    extension = int(request.args['extension'])
+    extension = str(request.args['extension'])
     session_org_id = session.get('org_id', None)
     if session.get('logged_in') is not None and session_org_id == org_id:
         service_name = str(request.args['service'])
@@ -73,7 +73,8 @@ def get_report():
                 title='Report',
                 output=reports,
                 org_name=org_name,
-                to=extension
+                to=extension,
+                service_name=service_name
             )
         except:
             flash('No reports available for this service!')
