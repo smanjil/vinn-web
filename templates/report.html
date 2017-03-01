@@ -27,7 +27,7 @@
             {% endwith %}
 
             {% for service in services %}
-                <li><a href="/singlepage?org_id={{ org_id }}&service={{ service.0 }}&extension={{ service.1 }}">{{ service.0 }} ({{ service.1 }})</a></li><br>
+                <li><a href="/pullreport?org_id={{ org_id }}&service={{ service.0 }}&extension={{ service.1 }}">{{ service.0 }} ({{ service.1 }})</a></li><br>
             {% endfor %}
         </div>
 
@@ -118,7 +118,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <form action="/singlepage?org_id={{ org_id }}&service={{ service_name }}&extension={{ to }}" method="post">
+                                    <form action="/pullreport?org_id={{ org_id }}&service={{ service_name }}&extension={{ to }}" method="post">
                                         <input type="hidden" name="log_id" value="{{ items.3 }}">
                                         <b>Comment:</b> <textarea cols="20" rows="5" name="comment"></textarea><br>
                                         <input type="submit" value="Add Comment" name="commentform"> 
@@ -129,7 +129,7 @@
                                     {% endfor %}
                                 </td>
                                 <td>
-                                  <form action="/singlepage?org_id={{ org_id }}&service={{ service_name }}&extension={{ to }}" method="post">
+                                  <form action="/pullreport?org_id={{ org_id }}&service={{ service_name }}&extension={{ to }}" method="post">
                                        <input type="hidden" name="log_id" value="{{ items.3 }}">
                                        <b>Status:</b> <br> 
                                            <input type="radio" name="status" value="solved" 

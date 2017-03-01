@@ -28,7 +28,7 @@ def login():
     else:
         session['logged_in'] = True
         session['org_id'] = user.org_id
-    return redirect(url_for('check', org_id=user.org_id))
+    return redirect(url_for('get_report', org_id=user.org_id))
 
 
 @app.route('/logout')
@@ -37,8 +37,8 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/singlepage', methods=['GET', 'POST'])
-def check():
+@app.route('/pullreport', methods=['GET', 'POST'])
+def get_report():
     org_id = request.args['org_id']
     session_org_id = session.get('org_id', None)
 
@@ -87,7 +87,7 @@ def check():
                 )
             except:
                 flash('No reports available for this service!')
-                return redirect(url_for('organization_modules', org_id=org_id))
+                return redirect(url_for('get_report', org_id=org_id))
         else:
             return render_template(
                 'report.html',
