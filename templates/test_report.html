@@ -146,10 +146,14 @@
                             {% if 'timesRepeated' in items.2 %}
                                 Times Repeated: {{ items.2['timesRepeated'] }} 
                             {% elif 'recordedFileName' in items.2 %}
-                                Recorded File:  
-                                    <audio controls>
-                                        <source src="{{ url_for('static', filename=items.2['recordedFileName'] + '.wav') }}" type="audio/mpeg">
-                                    </audio>  <br><br>
+                                {% if items.2['recordedFileName'] %}
+                                    Recorded File:  
+                                        <audio controls>
+                                            <source src="{{ url_for('static', filename=items.2['recordedFileName'] + '.wav') }}" type="audio/mpeg">
+                                        </audio>  <br><br>
+                                {% else %}
+                                    Call hungup before recording started!
+                                {% endif %}
                             {% endif %}
                         </td>
                     </tr>
