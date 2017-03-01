@@ -1,0 +1,42 @@
+
+
+.centered{
+    margin: 0 auto;
+}
+
+.container{
+    margin-top: 50px;
+    margin-left: 500px;
+    height: 300px;
+    width: 300px;
+    background: skyblue;
+}
+
+#sidebar{
+    margin-left: 20px;
+    margin-top: 20px;
+    width: 150px;
+    height: 300px;
+    float: left;
+    background: green;
+    text-align: center;
+}
+
+#sidebar li a, #sidebar a{
+    color: black;
+}
+
+#sidebar li a:hover, #sidebar a:hover{
+    color: blue;
+}
+
+#main-content{
+    margin-left: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: auto;
+    width: auto;
+    float: left;
+    background: lightblue;
+}
+

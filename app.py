@@ -15,22 +15,6 @@ def index():
                            title='Home')
 
 
-@app.route('/modules')
-def organization_modules():
-    org_id = request.args['org_id']
-    session_org_id = session.get('org_id', None)
-    if session.get('logged_in') is not None and str(session_org_id) == org_id:
-        print 'Organization id: ', org_id
-        service = Services.select().where(Services.org_id == org_id)
-        print 'Services rows: ', len(service)
-        services = [[items.service_type.name, items.extension] for items in service]
-        return render_template('services.html',
-                        services=services,
-                        org_id=org_id)
-    else:
-        return redirect(url_for('index'))
-
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     username = request.form['username']
@@ -39,11 +23,12 @@ def login():
         user = Users.select().where(Users.username == username,
                                     Users.password == password)[0]
     except:
-        raise RuntimeError('User does not exist!')
+        flash('Username/Password does not match')
+        return redirect(url_for('index'))
     else:
         session['logged_in'] = True
         session['org_id'] = user.org_id
-    return redirect(url_for('organization_modules', org_id=user.org_id))
+    return redirect(url_for('check', org_id=user.org_id))
 
 
 @app.route('/logout')
@@ -52,13 +37,16 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/pullreport', methods=['GET', 'POST'])
-def get_report():
-    org_id = int(request.args['org_id'])
-    extension = str(request.args['extension'])
+@app.route('/singlepage', methods=['GET', 'POST'])
+def check():
+    org_id = request.args['org_id']
     session_org_id = session.get('org_id', None)
-    if session.get('logged_in') is not None and session_org_id == org_id:
-        service_name = str(request.args['service'])
+
+    if session.get('logged_in') is not None and str(session_org_id) == org_id:
+        print 'Organization id: ', org_id
+        service = Services.select().where(Services.org_id == org_id)
+        print 'Services rows: ', len(service)
+        services = [[items.service_type.name, items.extension] for items in service]
 
         if request.method == 'POST':
             if 'commentform' in request.form:
@@ -71,32 +59,45 @@ def get_report():
                 i = IncomingLog.update(status=status).where(IncomingLog.id == log_id)
                 i.execute()
 
-        reports = []
-        try:
-            for i in IncomingLog.select().where(IncomingLog.org == org_id, IncomingLog.service == service_name, IncomingLog.extension == extension).order_by(IncomingLog.id.desc()):
-                item = []
-                item.append(i.incoming_number)
-                item.append(i.call_start_time)
-                item.append(i.generalized_data_incoming.data)
-                item.append(i.id)
-                item.append(i.comment_set)
-                item.append(i.status)
-                org_name = i.org.name
-                reports.append(item)
+        if 'service' in request.args and 'extension' in request.args:
+            service_name = str(request.args['service'])
+            extension = str(request.args['extension'])
+
+            reports = []
+            try:
+                for i in IncomingLog.select().where(IncomingLog.org == org_id, IncomingLog.service == service_name, IncomingLog.extension == extension).order_by(IncomingLog.id.desc()):
+                    item = []
+                    item.append(i.incoming_number)
+                    item.append(i.call_start_time)
+                    item.append(i.generalized_data_incoming.data)
+                    item.append(i.id)
+                    item.append(i.comment_set)
+                    item.append(i.status)
+                    org_name = i.org.name
+                    reports.append(item)
+                return render_template(
+                    'report.html',
+                    title='Report',
+                    output=reports,
+                    org_name=org_name,
+                    to=extension,
+                    org_id=org_id,
+                    services=services,
+                    service_name=service_name
+                )
+            except:
+                flash('No reports available for this service!')
+                return redirect(url_for('organization_modules', org_id=org_id))
+        else:
             return render_template(
-                'test_report.html',
+                'report.html',
                 title='Report',
-                output=reports,
-                org_name=org_name,
-                to=extension,
-                service_name=service_name,
-                org_id=org_id
+                org_id=org_id,
+                services=services
             )
-        except:
-            flash('No reports available for this service!')
-            return redirect(url_for('organization_modules', org_id=org_id))
     else:
         return redirect(url_for('index'))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
