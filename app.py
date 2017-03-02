@@ -28,6 +28,7 @@ def login():
     else:
         session['logged_in'] = True
         session['org_id'] = user.org_id
+        session['username'] = username
     return redirect(url_for('get_report', org_id=user.org_id))
 
 
@@ -47,6 +48,9 @@ def get_report():
         service = Services.select().where(Services.org_id == org_id)
         print 'Services rows: ', len(service)
         services = [[items.service_type.name, items.extension] for items in service]
+
+        i = IncomingLog.select().where(IncomingLog.org == org_id)
+        org_name = i[0].org.name
 
         if request.method == 'POST':
             if 'commentform' in request.form:
@@ -93,7 +97,8 @@ def get_report():
                 'report.html',
                 title='Report',
                 org_id=org_id,
-                services=services
+                services=services,
+                org_name=org_name
             )
     else:
         return redirect(url_for('index'))

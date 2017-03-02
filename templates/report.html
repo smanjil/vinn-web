@@ -10,11 +10,23 @@
     </head>
     <body>
         <div id="sidebar">
-            {% if not session.logged_in %}
-                <a href="/login"><b>Login</b></a>
-            {% else %}
-                <a href="/logout"><b>Logout</b></a><br><br>
-            {% endif %}
+            <h2>VoiceInn</h2> <hr>
+            <h3>Services</h3> <hr>
+            {% for service in services %}
+                <li><a href="/pullreport?org_id={{ org_id }}&service={{ service.0 }}&extension={{ service.1 }}">{{ service.0 }} ({{ service.1 }})</a></li><br>
+            {% endfor %}
+        </div>
+
+        <div id="main-content">
+            <p>
+                {{ org_name }}
+                {{ session['username'] }}
+                {% if not session.logged_in %}
+                    <a href="/login"><b>Login</b></a>
+                {% else %}
+                    <a href="/logout"><b>Logout</b></a><br><br>
+                {% endif %}
+            </p>
 
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
@@ -26,12 +38,6 @@
                 {% endif %}
             {% endwith %}
 
-            {% for service in services %}
-                <li><a href="/pullreport?org_id={{ org_id }}&service={{ service.0 }}&extension={{ service.1 }}">{{ service.0 }} ({{ service.1 }})</a></li><br>
-            {% endfor %}
-        </div>
-
-        <div id="main-content">
             {% if service_name == 'VNuwakot' %}
                 {% if output %}
                     <table border="2">
