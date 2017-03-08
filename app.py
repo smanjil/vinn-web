@@ -53,13 +53,15 @@ def get_report():
         org_name = i[0].org.name
 
         if request.method == 'POST':
+            print request.form
             if 'commentform' in request.form:
                 log_id = request.form['log_id']
                 comment = request.form['comment']
                 Comment.create(log_id=log_id, comment=comment)
-            if 'statusform' in request.form:
+            if 'status' in request.form:
                 log_id = request.form['log_id']
                 status = request.form['status']
+                print status
                 i = IncomingLog.update(status=status).where(IncomingLog.id == log_id)
                 i.execute()
 

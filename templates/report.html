@@ -196,10 +196,21 @@
                         <!--&gt; Unsolved<br>-->
                         <!--<input type="submit" value="Change Status" name="statusform">-->
                     <!--</form>-->
-                    <select name="" id="" onchange="">
-                        <option value="">Solved</option>
-                        <option value="">Unsolved</option>
-                    </select>
+                    <form action="/pullreport?org_id={{ org_id }}&service={{ service_name }}&extension={{ to }}" method="post">
+                        <input type="hidden" name="log_id" value="{{ items.3 }}">
+                        <select name="status" id="" onchange="this.form.submit()">
+                            <option value="solved"
+                                {% if items.5 == 'solved' %}    
+                                    selected
+                                {% endif %}
+                            >Solved</option>
+                            <option value="unsolved"
+                                {% if items.5 == 'unsolved' %}
+                                    selected
+                                {% endif %}
+                            >Unsolved</option>
+                        </select>
+                    </form>
                 </td>
             </tr>
             {% endfor %}
