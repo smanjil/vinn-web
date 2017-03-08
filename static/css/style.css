@@ -1,42 +1,326 @@
+/*.centered{*/
+/*margin: 0 auto;*/
+/*}*/
 
+/*.container{*/
+/*margin-top: 50px;*/
+/*margin-left: 500px;*/
+/*height: 300px;*/
+/*width: 300px;*/
+/*background: skyblue;*/
+/*}*/
 
-.centered{
+body {
+    background: #f4f7f9;
+    font: 400 14px/22px 'Roboto Condensed', sans-serif;
+}
+
+::-webkit-input-placeholder {
+    color: #ccc;
+}
+
+::-moz-placeholder {
+    color: #ccc;
+}
+
+:-ms-input-placeholder {
+    color: #ccc;
+}
+
+input:focus, select:focus {
+    outline: 0;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+}
+
+/*login-wrapper*/
+
+.login-wrapper {
+    background-image: linear-gradient(46deg, #66A7FF 0%, #8AF7FE 99%);
+    height: 100vh;
+    width: 100vw;
+}
+
+.login-container {
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 0 30px 0 rgba(46, 91, 153, 0.3);
+    left: 50%;
     margin: 0 auto;
+    padding: 60px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    width: 460px;
 }
 
-.container{
-    margin-top: 50px;
-    margin-left: 500px;
-    height: 300px;
-    width: 300px;
-    background: skyblue;
+.login-container form {
+    margin-bottom: 0;
 }
 
-#sidebar{
-    margin-left: 20px;
-    margin-top: 20px;
-    width: 150px;
-    height: 300px;
-    float: left;
-    background: green;
+.login-container h1 {
+    color: #000;
+    font-size: 48px;
+    font-weight: 300;
+    margin: 0 0 36px;
     text-align: center;
 }
 
-#sidebar li a, #sidebar a{
-    color: black;
+.login-container form input[type="text"], .login-container form input[type="password"], .login-container form input[type="text"]:focus, .login-container form input[type="password"]:focus {
+    border: 0;
+    border-bottom: 1px solid #e5e5e5;
+    border-radius: 0;
+    box-shadow: none;
+    color: #4a4a4a;
+    font-size: 16px;
+    height: 40px;
+    margin-bottom: 36px;
+    padding: 0;
 }
 
-#sidebar li a:hover, #sidebar a:hover{
-    color: blue;
+.login-container form input[type="password"], .login-container form input[type="password"]:hover, .login-container form input[type="password"]:focus {
+    margin-bottom: 50px;
 }
 
-#main-content{
-    margin-left: 20px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    height: auto;
-    width: auto;
+.login-container form input[type="submit"] {
+    background: #7A84CC;
+    border: 0;
+    box-shadow: none;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 400;
+    float: right;
+    height: 48px;
+    margin-bottom: 0;
+    width: 138px;
+    text-transform: uppercase;
+    transition: all 0.5s ease-in-out;
+}
+
+.login-container form input[type="submit"]:hover {
+    background: #6b76c1;
+}
+
+/*nav*/
+.navbar-default {
+    background: #fff;
+    border: 0;
+    border-bottom: 1px solid #eee;
+    border-radius: 0;
+    overflow: hidden;
+}
+
+.navbar-default .container-fluid {
+    padding: 0;
+}
+
+.navbar-default ul li {
+    border-left: 1px solid #eee;
     float: left;
-    background: lightblue;
+    list-style: none;
 }
 
+.navbar-default ul li span {
+    color: #868E98;
+    padding: 20px 60px 20px 48px;
+    display: block;
+    position: relative;
+}
+
+.navbar-default ul li a {
+    position: relative;
+}
+
+.navbar-default ul li span:before, .navbar-default ul li a:before {
+    background: url(../images/ic_sprite.png) no-repeat 0 0;
+    content: "";
+    height: 20px;
+    left: 18px;
+    position: absolute;
+    top: 23px;
+    width: 20px;
+}
+
+.navbar-default ul li.username span:before {
+    background-position: 0 -29px;
+}
+
+.navbar-default ul li.logout a {
+    text-indent: -9999px;
+}
+
+.navbar-default ul li.logout a:before {
+    background-position: -4px -64px;
+}
+
+.navbar-default ul li a {
+    background: #5A92E1;
+    display: block;
+    height: 62px;
+    width: 50px;
+}
+
+.navbar-collapse {
+    margin-right: -15px !important;
+}
+
+/*sidebar*/
+aside {
+    background: #323440;
+    float: left;
+    height: 100vh;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 260px;
+    z-index: 10;
+}
+
+aside h1 {
+    border-bottom: 1px solid #3F4251;
+    color: #fff;
+    font: 36px/42px 'Roboto Condensed', sans-serif;
+    letter-spacing: -1px;
+    margin: 0 0 30px;
+    padding: 12px 30px 7px;
+}
+
+aside h2 {
+    color: #7A8799;
+    font-size: 20px;
+    font-weight: 300;
+    margin: 0;
+    padding: 0 30px 20px;
+    text-transform: uppercase;
+}
+
+aside ul {
+    border-top: 1px solid #3F4251;
+    padding: 0;
+}
+
+aside ul li a {
+    border-bottom: 1px solid #3F4251;
+    color: #7E868C;
+    display: block;
+    padding: 12px 30px;
+}
+
+aside ul li a:hover, aside ul li a.active {
+    color: #fff;
+    text-decoration: none;
+}
+
+aside ul li a.active {
+    background: #3F4251;
+}
+
+#main-content {
+    float: left;
+    margin-left: 260px;
+    width: calc(100% - 260px);
+}
+
+.content-wrapper {
+    padding: 50px 60px;
+}
+
+table {
+    width: 100%;
+}
+
+tbody tr {
+    border-bottom: 1px solid #eee;
+    box-shadow: 0 0 8px 0 rgba(184, 190, 230, 0.3);
+}
+
+tr td {
+    background: #fff;
+}
+
+th {
+    color: #a2b3c1;
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: uppercase;
+    padding: 15px;
+}
+
+td {
+    font-size: 14px;
+    padding: 15px;
+    vertical-align: top;
+}
+
+.audio-wrap {
+    color: #484848;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.audio-wrap > span {
+    display: block;
+}
+
+.audio-wrap audio {
+    float: left;
+    margin-top: 4px;
+}
+
+.comment-section form {
+    background: #fafafa;
+    padding: 20px;
+    width: 300px;
+}
+
+.comment-section textarea {
+    border: 1px solid #ccc;
+    float: left;
+    height: 30px;
+    margin-bottom: 10px;
+    width: 260px;
+}
+
+.comment-section input[type="submit"] {
+    background: #7A84CC;
+    border: 0;
+    border-radius: 4px;
+    color: #fff;
+    padding: 5px;
+}
+
+.comment-section input[type="submit"]:hover {
+    background: #6b76c1;
+}
+
+.previous-comments {
+    width: 300px;
+}
+
+.previous-comments h3 {
+    color: #aaa;
+    font-size: 14px;
+}
+
+.previous-comments ul {
+    padding-left: 0;
+}
+
+.previous-comments ul li {
+    background: url(../images/ic_comment.png) no-repeat 1px 11px;
+    border-bottom: 1px solid #eee;
+    list-style: none;
+    padding: 8px 0 8px 24px;
+}
+
+.previous-comments ul li:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.playback {
+    display: block;
+    margin-bottom: 10px;
+}

@@ -1,17 +1,14 @@
-
-
-
 <html>
     <head>
     <title>{{ title }}</title>
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700" rel="stylesheet">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.min.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='js/bootstrap.min.js') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     </head>
     <body>
-        <div class="container">
-            <div class="centered text-center">
+    <div class="login-wrapper">
+        <div class="login-container">
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}
                         <ul class=flashes>
@@ -22,13 +19,15 @@
                     {% endif %}
                 {% endwith %}
       
-                <h3>VoiceInn</h3> <hr>
+                <h1>VoiceInn</h1>
                 <form action="/login" method="post">
-                    <b>Username: </b> <input type="text" class="form-control" name="username" placeholder="Your organization's username here!"><br>
-                    <b>Password: </b> <input type="password" class="form-control" name="password" placeholder="Your organization's password here!"><br>
+                    <!--<b>Username: </b> -->
+                    <input type="text" class="form-control" name="username" placeholder="Your organization's username here!">
+                    <!--<b>Password: </b>-->
+                    <input type="password" class="form-control" name="password" placeholder="Your organization's password here!">
                     <input type="submit" class="form-control" value="Login"> 
                 </form>    
             </div>
-        </div>
+    </div>
     </body>
 </html>
