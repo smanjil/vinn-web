@@ -1,0 +1,271 @@
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>{{ title }}</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    </head>
+    <body>
+        <div id="app">
+            
+            <template id="login-template">
+                <div class="login-wrapper">
+                    <div class="login-container">
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                <ul class=flashes>
+                                    {% for message in messages %}
+                                        <li>{{ message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        {% endwith %}
+                        <h1>VoiceInn</h1>
+                        <form action="/login" method="post">
+                            <input type="text" class="form-control" name="username" placeholder="Your organization's username here!">
+                            <input type="password" class="form-control" name="password" placeholder="Your organization's password here!">
+                            <input type="submit" class="form-control" value="Login">
+                        </form>
+                    </div>
+                </div>
+            </template>
+
+            <template id="report-template">
+                <aside>
+                    <h1>VoiceInn</h1>
+                    <h2>Services</h2>
+                    <ul>
+                        {% for service in services %}
+                            <li>
+                                <router-link :to="{name: 'report', params: {org_id: {{ org_id }}, service: {{ service.0 }}, extension: {{ service.1 }}}}">
+                                    {{ service.0 }} ({{ service.1 }})
+                                </router-link>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </aside>
+                <div id="main-content">
+                    <nav class="navbar navbar-default">
+                        <div class="container-fluid">
+                            <div class="navbar-right">
+                                <ul>
+                                    <li class="organisation"><span>{{ org_name }}</span></li>
+                                    <li class="username"><span>{{ session['username'] }}</span></li>
+                                    <li class="logout">
+                                        {% if not session.logged_in %}
+                                            <a href="/login">Login</a>
+                                        {% else %}
+                                            <a href="/logout">Logout</a>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                    <div class="content-wrapper">
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                <ul class="flashes">
+                                    {% for message in messages %}
+                                        <li>{{ message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        {% endwith %}
+
+                        {% if service_name == 'VNuwakot' %}
+                            {% if output %}
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>S.No.</th>
+                                            <th>From</th>
+                                            <th>DateTime</th>
+                                            <th>Call Description</th>
+                                            <th>Comment</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for items in output %}
+                                            <tr>
+                                                <td>{{ loop.index }}</td>
+                                                <td>{{ items.0 }}</td>
+                                                <td>{{ items.1 }}</td>
+                                                <td class="call-description">
+                                                    {% if items.2['vboard']['vboard1'] and items.2['vboard']['vboard2'] and items.2['vsurvey']['status'] %}
+                                                        Listened to both audios <br> Took Survey
+                                                        <div class="audio-wrap">
+                                                            <span>VDC:</span>
+                                                            <audio controls>
+                                                                <source src="{{ url_for('static', filename=items.2['vsurvey']['vdc_audio'] + '.wav') }}" type="audio/mpeg">
+                                                            </audio>
+                                                        </div>
+                                                        Emergency or Eye:
+                                                            {% if items.2['vsurvey']['emergency_or_eye'] == '1' %}
+                                                                Emergency
+                                                            {% else %}
+                                                                Eye
+                                                            {% endif %}
+                                                        <div class="audio-wrap">
+                                                            <span>Message:</span>
+                                                            <audio controls>
+                                                                <source src="{{ url_for('static', filename=items.2['vsurvey']['msg_audio'] + '.wav') }}" type="audio/mpeg">
+                                                            </audio>
+                                                        </div>
+                                                    {% elif items.2['vboard']['vboard1'] and items.2['vsurvey']['status'] %}
+                                                        Listened to audio1 <br> Took Survey
+                                                        <div class="audio-wrap">
+                                                            <span>VDC:</span>
+                                                            <audio controls>
+                                                                <source src="{{ url_for('static', filename=items.2['vsurvey']['vdc_audio'] + '.wav') }}" type="audio/mpeg">
+                                                            </audio>
+                                                        </div>
+                                                        Emergency or Eye:
+                                                            {% if items.2['vsurvey']['emergency_or_eye'] == '1' %}
+                                                                Emergency
+                                                            {% else %}
+                                                                Eye
+                                                            {% endif %}
+                                                        <div class="audio-wrap">
+                                                            <span>Message:</span>
+                                                            <audio controls>
+                                                                <source src="{{ url_for('static', filename=items.2['vsurvey']['msg_audio'] + '.wav') }}" type="audio/mpeg">
+                                                            </audio>
+                                                        </div>
+                                                    {% elif items.2['vboard']['vboard2'] and items.2['vsurvey']['status'] %}
+                                                        Listened to audio2 <br> Took Survey
+                                                        <div class="audio-wrap">
+                                                            <span>VDC:</span>
+                                                            <audio controls>
+                                                                <source src="{{ url_for('static', filename=items.2['vsurvey']['vdc_audio'] + '.wav') }}" type="audio/mpeg">
+                                                            </audio>
+                                                        </div>
+                                                        Emergency or Eye:
+                                                            {% if items.2['vsurvey']['emergency_or_eye'] == '1' %}
+                                                                Emergency
+                                                            {% else %}
+                                                                Eye
+                                                            {% endif %}
+                                                        <div class="audio-wrap">
+                                                            <span>Message:</span>
+                                                            <audio controls>
+                                                                <source src="{{ url_for('static', filename=items.2['vsurvey']['msg_audio'] + '.wav') }}" type="audio/mpeg">
+                                                            </audio>
+                                                        </div>
+                                                    {% elif items.2['vboard']['vboard1'] and items.2['vboard']['vboard2'] and not items.2['vsurvey']['status'] %}
+                                                        Listened to audio1 and audio2
+                                                    {% elif items.2['vboard']['vboard1'] and not items.2['vsurvey']['status'] %}
+                                                        Listened to audio1
+                                                    {% elif items.2['vboard']['vboard2'] and not items.2['vsurvey']['status'] %}
+                                                        Listened to audio2
+                                                    {% elif not items.2['vboard']['vboard1'] and not items.2['vboard']['vboard2'] and items.2['vsurvey']['status'] %}
+                                                        Took Survey
+                                                        <div class="audio-wrap">
+                                                            <span>VDC:</span>
+                                                            <audio controls>
+                                                                <source src="{{ url_for('static', filename=items.2['vsurvey']['vdc_audio'] + '.wav') }}" type="audio/mpeg">
+                                                            </audio>
+                                                        </div>
+                                                        Emergency or Eye:
+                                                            {% if items.2['vsurvey']['emergency_or_eye'] == '1' %}
+                                                                Emergency
+                                                            {% else %}
+                                                                Eye
+                                                            {% endif %}
+                                                        <div class="audio-wrap">
+                                                            <span>Message:</span>
+                                                            <audio controls>
+                                                                <source src="{{ url_for('static', filename=items.2['vsurvey']['msg_audio'] + '.wav') }}" type="audio/mpeg">
+                                                            </audio>
+                                                        </div>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <div class="comment-section">
+                                                        <form action="/pullreport?org_id={{ org_id }}&service={{ service_name }}&extension={{ to }}" method="post">
+                                                            <input type="hidden" name="log_id" value="{{ items.3 }}">
+                                                            <textarea cols="20" rows="5" name="comment"></textarea><br>
+                                                            <input type="submit" value="Add Comment" name="commentform">
+                                                        </form>
+                                                        <div class="previous-comments">
+                                                            <h3>Previous Comments:</h3>
+                                                            <ul>
+                                                                {% for item in items.4 %}
+                                                                    <li>{{ item.comment }}</li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <form action="/pullreport?org_id={{ org_id }}&service={{ service_name }}&extension={{ to }}" method="post">
+                                                        <input type="hidden" name="log_id" value="{{ items.3 }}">
+                                                        <select name="status" id="" onchange="this.form.submit()">
+                                                            <option value="solved" {% if items.5 == 'solved' %} selected {% endif %}>
+                                                                Solved
+                                                            </option>
+                                                            <option value="unsolved" {% if items.5 == 'unsolved' %} selected {% endif %}>
+                                                                Unsolved
+                                                            </option>
+                                                        </select>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        {% else %}
+                            {% if output %}
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>S.N.</th>
+                                            <th>From</th>
+                                            <th>DateTime</th>
+                                            <th>Call Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for items in output %}
+                                            <tr>
+                                                <td>{{ loop.index }}</td>
+                                                <td>{{ items.0 }}</td>
+                                                <td>{{ items.1 }}</td>
+                                                <td>
+                                                    <span class="playback">Playback Completed: {{ items.2['playbackCompleted'] }}</span>
+                                                    {% if 'timesRepeated' in items.2 %}
+                                                        Times Repeated: {{ items.2['timesRepeated'] }}
+                                                    {% elif 'recordedFileName' in items.2 %}
+                                                        {% if items.2['recordedFileName'] %}
+                                                            Recorded File:
+                                                                <audio controls>
+                                                                    <source src="{{ url_for('static', filename=items.2['recordedFileName'] + '.wav') }}" type="audio/mpeg">
+                                                                </audio> <br><br>
+                                                        {% else %}
+                                                            Call hungup before recording started!
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+
+            </template>
+
+        </div>
+
+        <script type="text/javascript" src="{{ url_for('static', filename='js/vue.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/axios.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/vue-router.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='js/route-single.js') }}"></script>
+    </body>
+</html>

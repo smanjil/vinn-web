@@ -1,15 +1,3 @@
-/*.centered{*/
-/*margin: 0 auto;*/
-/*}*/
-
-/*.container{*/
-/*margin-top: 50px;*/
-/*margin-left: 500px;*/
-/*height: 300px;*/
-/*width: 300px;*/
-/*background: skyblue;*/
-/*}*/
-
 body {
     background: #f4f7f9;
     font: 400 14px/22px 'Roboto Condensed', sans-serif;
@@ -109,11 +97,12 @@ input:-webkit-autofill {
     border: 0;
     border-bottom: 1px solid #eee;
     border-radius: 0;
+    margin-bottom: 0;
     overflow: hidden;
 }
 
-.navbar-default .container-fluid {
-    padding: 0;
+.navbar-default ul {
+    margin: 0;
 }
 
 .navbar-default ul li {
@@ -162,9 +151,12 @@ input:-webkit-autofill {
     width: 50px;
 }
 
-.navbar-collapse {
+.navbar-right {
+    float: right;
     margin-right: -15px !important;
 }
+
+
 
 /*sidebar*/
 aside {
@@ -174,7 +166,7 @@ aside {
     left: 0;
     position: fixed;
     top: 0;
-    width: 260px;
+    width: 220px;
     z-index: 10;
 }
 
@@ -219,12 +211,12 @@ aside ul li a.active {
 
 #main-content {
     float: left;
-    margin-left: 260px;
-    width: calc(100% - 260px);
+    margin-left: 220px;
+    width: calc(100% - 220px);
 }
 
 .content-wrapper {
-    padding: 50px 60px;
+    padding: 40px;
 }
 
 table {
@@ -272,7 +264,7 @@ td {
 .comment-section form {
     background: #fafafa;
     padding: 20px;
-    width: 300px;
+    width: 200px;
 }
 
 .comment-section textarea {
@@ -280,7 +272,7 @@ td {
     float: left;
     height: 30px;
     margin-bottom: 10px;
-    width: 260px;
+    width: 160px;
 }
 
 .comment-section input[type="submit"] {
@@ -296,7 +288,7 @@ td {
 }
 
 .previous-comments {
-    width: 300px;
+    width: 200px;
 }
 
 .previous-comments h3 {
