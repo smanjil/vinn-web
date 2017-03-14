@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
+import filter
+
 # set the secret key.  keep this really secret: required to use session
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 

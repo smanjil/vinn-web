@@ -57,7 +57,7 @@
                                 <tr>
                                     <th>S.No.</th>
                                     <th>From</th>
-                                    <th>DateTime</th>
+                                    <th>Call Time</th>
                                     <th>Call Description</th>
                                     <th>Call Duration</th>
                                     <th>Comment</th>
@@ -69,7 +69,7 @@
                                     <tr>
                                         <td>{{ loop.index }}</td>
                                         <td>{{ items.0 }}</td>
-                                        <td>{{ items.1 }}</td>
+                                        <td>{{ items.1|date_humanize }}</td>
                                         <td class="call-description">
                                             {% if items.2['vboard']['vboard1'] and items.2['vboard']['vboard2'] and items.2['vsurvey']['status']
                                             %}
@@ -220,7 +220,7 @@
                                 <tr>
                                     <th>S.N.</th>
                                     <th>From</th>
-                                    <th>DateTime</th>
+                                    <th>Call Time</th>
                                     <th>Call Description</th>
                                     <th>Call Duration</th>
                                 </tr>
@@ -230,7 +230,7 @@
                                     <tr>
                                         <td>{{ loop.index }}</td>
                                         <td>{{ items.0 }}</td>
-                                        <td>{{ items.1 }}</td>
+                                        <td>{{ items.1|date_humanize }}</td>
                                         <td>
                                             <span class="playback">Playback Completed: {{ items.2['playbackCompleted'] }}</span>
                                             {% if 'timesRepeated' in items.2 %}
