@@ -73,6 +73,7 @@ def get_report():
                     item.append(i.id)
                     item.append(i.comments)
                     item.append(i.status)
+                    item.append(i.call_duration)
                     org_name = i.org_ids.name
                     reports.append(item)
                 return render_template(
