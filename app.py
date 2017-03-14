@@ -59,6 +59,7 @@ def get_report():
                 status = request.form['status']
                 i = IncomingLog.query.filter(IncomingLog.id == log_id)
                 i[0].status = status
+                db.session.commit()
 
         if 'service' in request.args and 'extension' in request.args:
             service_name = str(request.args['service'])
