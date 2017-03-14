@@ -1,111 +1,104 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from sqlalchemy.dialects.postgresql import JSON
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres@localhost/voiceinndbmodels'
+# -*- coding: utf-8 -*-
 
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+from flask import Flask, render_template, request, redirect, url_for, session, flash
+from model import IncomingLog, User, Service, Comment
+from sqlalchemy import desc
+from config import app, db
 
-# set the secret key.  keep this really secret: required to use session
-app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
-
-class Organization(db.Model):
-    __tablename__ = 'Organization'
-    id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(100))
-    created = db.Column(db.DateTime)
-    location = db.Column(db.String(100))
-    phone = db.Column(db.Integer)
-    email = db.Column(db.String)
+@app.route('/')
+def index():
+    return render_template('main.html',
+                           title='Home')
 
 
-class Service(db.Model):
-    __tablename__ = 'Service'
-    id = db.Column(db.Integer, primary_key = True)
-    org_id = db.Column(db.Integer, db.ForeignKey('organization.id'))    
-    service_type = db.Column(db.Integer)
-    service_id = db.Column(db.Integer)
-    extension = db.Column(db.Integer)
-    isActive = db.Column(db.Boolean)
-    created = db.Column(db.DateTime)
-    allocated_channels = db.Column(db.Integer)
-    channels_in_use = db.Column(db.Integer)
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    username = request.form['username']
+    password = request.form['password']
+    try:
+        user = User.query.filter(User.username == username,
+                                    User.password == password)[0]
+    except:
+        flash('Username/Password does not match')
+        return redirect(url_for('index'))
+    else:
+        session['logged_in'] = True
+        session['org_id'] = user.org_id
+        session['username'] = username
+    return redirect(url_for('get_report', org_id=user.org_id))
 
 
-class User(db.Model):
-    __tablename__ = 'User'
-    id = db.Column(db.Integer, primary_key = True)
-    org_id = db.Column(db.Integer, db.ForeignKey('organization.id'))
-    name = db.Column(db.String(100))
-    username = db.Column(db.String(100))
-    password = db.Column(db.String(100))
-    phone = db.Column(db.Integer)
-    email = db.Column(db.String(100))
-    created = db.Column(db.DateTime)
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    return redirect(url_for('index'))
 
 
-class ServiceType(db.Model):
-    __tablename__ = 'ServicecTypei'
-    id = db.Column(db.Integer, primary_key = True)
-    s_type_id = db.Column(db.Integer, db.ForeignKey('service.service_type'))
-    name = db.Column(db.String(100))
+@app.route('/pullreport', methods=['GET', 'POST'])
+def get_report():
+    org_id = request.args['org_id']
+    session_org_id = session.get('org_id', None)
+
+    if session.get('logged_in') is not None and str(session_org_id) == org_id:
+        service = Service.query.filter(Service.org_id == org_id)
+        services = [[items.service_types.name, items.extension] for items in service]
+
+        i = IncomingLog.query.filter(IncomingLog.org_id == org_id)
+        org_name = i[0].org_ids.name
+
+        if request.method == 'POST':
+            if 'commentform' in request.form:
+                log_id = request.form['log_id']
+                comment = request.form['comment']
+                cmnt = Comment(log_id=log_id, comment=comment)
+                db.session.add(cmnt)
+                db.session.commit()
+            if 'status' in request.form:
+                log_id = request.form['log_id']
+                status = request.form['status']
+                i = IncomingLog.query.filter(IncomingLog.id == log_id)
+                i[0].status = status
+
+        if 'service' in request.args and 'extension' in request.args:
+            service_name = str(request.args['service'])
+            extension = str(request.args['extension'])
+            reports = []
+            try:
+                for i in IncomingLog.query.filter(IncomingLog.org_id == org_id, IncomingLog.service == service_name, IncomingLog.extension == extension).order_by(desc(IncomingLog.id)):
+                    item = []
+                    item.append(i.incoming_number)
+                    item.append(i.call_start_time)
+                    item.append(i.generalized_data_incomings.data)
+                    item.append(i.id)
+                    item.append(i.comments)
+                    item.append(i.status)
+                    org_name = i.org_ids.name
+                    reports.append(item)
+                return render_template(
+                    'report.html',
+                    title='Report',
+                    output=reports,
+                    org_name=org_name,
+                    to=extension,
+                    org_id=org_id,
+                    services=services,
+                    service_name=service_name
+                )
+            except:
+                flash('No reports available for this service!')
+                return redirect(url_for('get_report', org_id=org_id))
+        else:
+            return render_template(
+                'report.html',
+                title='Report',
+                org_id=org_id,
+                services=services,
+                org_name=org_name
+            )
+    else:
+        return redirect(url_for('index'))
 
 
-class GeneralizedDialplan(db.Model):
-    __tablename__ = 'GeneralizedDialplan'
-    id = db.Column(db.Integer, primary_key = True)
-    s_id = db.Column(db.Integer, db.ForeignKey('service.service_id'))
-    dialplan = db.Column(JSON)
-    previous_version_id = db.Column(db.Integer)
-
-
-class GeneralizedDataIncoming(db.Model):
-    __tablename__ = 'GeneralizedDataIncoming'
-    id = db.Column(db.Integer, primary_key = True)
-    g_id = db.Column(db.Integer, db.ForeignKey('generalizeddialplan.id'))
-    generalized_dialplan_id = db.Column(db.Integer)
-    data = db.Column(JSON)
-    incoming_number = db.Column(db.Integer)
-
-
-class GeneralizedDataOutgoing(db.Model):
-    __tablename__ = 'GeneralizedDataOutgoing'
-    id = db.Column(db.Integer, primary_key = True)
-    g_id = db.Column(db.Integer, db.ForeignKey('generalizeddialplan.id'))
-    generalized_dialplan_id = db.Column(db.Integer)
-    data = db.Column(JSON)
-    outgoing_number = db.Column(db.Integer)
-
-
-class IncomingLog(db.Model):
-    __tablename__ = 'IncomingLog'
-    id = db.Column(db.Integer, primary_key = True)
-    org_id = db.Column(db.Integer, db.ForeignKey('organization.id'))
-    service = db.Column(db.String(100))
-    call_time = db.Column(db.DateTime)
-    call_duration = db.Column(db.Float)
-    complete = db.Column(db.Boolean)
-    phone = db.Column(db.Integer)
-    status = db.Column(db.String(100))
-
-
-class OutgoingLog(db.Model):
-    __tablename__ = 'OutgoingLog'
-    id = db.Column(db.Integer, primary_key = True)
-    org_id = db.Column(db.Integer, db.ForeignKey('organization.id'))
-    service = db.Column(db.String(100))
-    call_time = db.Column(db.DateTime)
-    call_duration = db.Column(db.Float)
-    complete = db.Column(db.Boolean)
-    phone = db.Column(db.Integer)
-    status = db.Column(db.String(100))
-
-
-class Comment(db.Model):
-    __tablename__ = 'Comment'
-    id = db.Column(db.Integer, primary_key = True)
-    il_id = db.Column(db.Integer, db.ForeignKey('incominglog.id'))
-    comment = db.Column(db.String(500))
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0')

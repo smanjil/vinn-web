@@ -180,22 +180,6 @@
                     </div>
                 </td>
                 <td>
-                    <!--<form action="/pullreport?org_id={{ org_id }}&service={{ service_name }}&extension={{ to }}"-->
-                          <!--method="post">-->
-                        <!--<input type="hidden" name="log_id" value="{{ items.3 }}">-->
-                        <!--<b>Status:</b>-->
-                        <!--<input type="radio" name="status" value="solved"-->
-                               <!--{% if items.5== 'solved' %}-->
-                        <!--checked-->
-                        <!--{% endif %}-->
-                        <!--&gt; Solved<br>-->
-                        <!--<input type="radio" name="status" value="unsolved"-->
-                               <!--{% if items.5== 'unsolved' %}-->
-                        <!--checked-->
-                        <!--{% endif %}-->
-                        <!--&gt; Unsolved<br>-->
-                        <!--<input type="submit" value="Change Status" name="statusform">-->
-                    <!--</form>-->
                     <form action="/pullreport?org_id={{ org_id }}&service={{ service_name }}&extension={{ to }}" method="post">
                         <input type="hidden" name="log_id" value="{{ items.3 }}">
                         <select name="status" id="" onchange="this.form.submit()">
